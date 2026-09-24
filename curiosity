@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Curiosity Engine - Culture & Veille Quotidienne</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background-color: #0d0f12; color: #e2e8f0; font-family: system-ui, -apple-system, sans-serif; }
+    .glass-card { background: rgba(22, 27, 38, 0.75); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
+    .category-active { background-color: #3b82f6; color: #ffffff; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between p-4 md:p-8">
+  <div class="max-w-2xl mx-auto w-full">
+
+    <!-- Header / Streak Tracker -->
+    <header class="flex justify-between items-center mb-8">
+      <div>
+        <h1 class="text-2xl font-bold tracking-tight text-white">Curiosity Engine</h1>
+        <p class="text-xs text-slate-400">Une dose quotidienne de culture & d'innovation</p>
+      </div>
+
+      <div class="glass-card px-4 py-2 rounded-full flex items-center gap-2 border border-amber-500/30">
+        <span class="text-amber-400 font-bold" id="streak-count">🔥 1</span>
+        <span class="text-xs text-slate-300">Série de jours</span>
+      </div>
+    </header>
+
+    <!-- Category Filters -->
+    <nav class="flex gap-2 overflow-x-auto pb-4 mb-4 text-xs font-medium scrollbar-none" id="categories">
+      <button onclick="filterCategory('All')" class="cat-btn glass-card px-4 py-2 rounded-lg whitespace-nowrap text-white hover:bg-slate-800 transition">
+        Tous
+      </button>
+
+      <button onclick="filterCategory('Startups & Tech')" class="cat-btn glass-card px-4 py-2 rounded-lg whitespace-nowrap text-slate-300 hover:bg-slate-800 transition">
+        Startups & Tech
+      </button>
+
+      <button onclick="filterCategory('Géopolitique')" class="cat-btn glass-card px-4 py-2 rounded-lg whitespace-nowrap text-slate-300 hover:bg-slate-800 transition">
+        Géopolitique
+      </button>
+
+      <button onclick="filterCategory('Sciences')" class="cat-btn glass-card px-4 py-2 rounded-lg whitespace-nowrap text-slate-300 hover:bg-slate-800 transition">
+        Sciences
+      </button>
+
+      <button onclick="filterCategory('Culture Générale')" class="cat-btn glass-card px-4 py-2 rounded-lg whitespace-nowrap text-slate-300 hover:bg-slate-800 transition">
+        Culture Générale
+      </button>
+    </nav>
+
+    <!-- Main Fact Card -->
+    <main class="glass-card rounded-2xl p-6 md:p-8 shadow-2xl transition-all duration-300" id="fact-card">
+
+      <div class="flex justify-between items-center mb-4">
+        <span id="fact-category" class="text-xs font-semibold px-3 py-1 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30">
+          Tech
+        </span>
+
+        <span id="fact-read-time" class="text-xs text-slate-400">
+          1 min de lecture
+        </span>
+      </div>
+
+      <h2 id="fact-title" class="text-xl md:text-2xl font-bold text-white mb-4 leading-snug">
+        Chargement de l'information...
+      </h2>
+
+      <p id="fact-description" class="text-slate-300 text-sm md:text-base leading-relaxed mb-6">
+        ...
+      </p>
+
+      <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 mb-6">
+        <h3 class="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-1">
+          Pourquoi c'est important
+        </h3>
+
+        <p id="fact-impact" class="text-xs text-slate-300 leading-normal">
+          ...
+        </p>
+      </div>
+
+      <div class="flex gap-3">
+        <button onclick="nextFact()" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold py-3 px-4 rounded-xl transition flex justify-center items-center gap-2">
+          ⚡ Découvrir un autre fait
+        </button>
+
+        <button onclick="toggleBookmark()" id="bookmark-btn" class="glass-card hover:bg-slate-800 text-slate-300 p-3 rounded-xl transition">
+          🔖
+        </button>
+      </div>
+
+    </main>
+  </div>
+
+  <footer class="text-center text-xs text-slate-500 mt-8">
+    Objectif Majorant Dauphine • Plan de Clarté & Veille Quotidienne
+  </footer>
+
+  <script>
+    const facts = [
+      {
+        category: "Startups & Tech",
+        title: "L'effet de réseau de Metcalfe et la valeur des licornes",
+        description: "La loi de Metcalfe stipule que la valeur d'un réseau est proportionnelle au carré du nombre de ses utilisateurs ($N^2$). C'est ce principe mathématique qui explique la valorisation exponentielle des plateformes comme Stripe ou OpenAI.",
+        impact: "Essentiel pour comprendre la valorisation des startups en finance d'entreprise et en économie industrielle.",
+        readTime: "1 min"
+      },
+      {
+        category: "Géopolitique",
+        title: "Le détroit de Malacca : le goulot d'étranglement mondial",
+        description: "Plus de 25% du commerce mondial et du pétrole maritime passe par ce passage de seulement 2,7 km de large à son point le plus étroit entre la Malaisie et Sumatra.",
+        impact: "Point névralgique de la géopolitique maritime mondiale et des chaînes d'approvisionnement critiques.",
+        readTime: "1 min"
+      },
+      {
+        category: "Sciences",
+        title: "La mémoire flash et l'effet tunnel quantique",
+        description: "Les puces SSD de ton ordinateur utilisent le phénomène de mécanique quantique appelé 'effet tunnel' pour faire passer des électrons à travers une barrière isolante et stocker des données sans énergie.",
+        impact: "Illustration concrète de la physique quantique appliquée aux technologies informatiques du quotidien.",
+        readTime: "2 min"
+      },
+      {
+        category: "Culture Générale",
+        title: "Le paradoxe de Simpson en statistiques",
+        description: "Phénomène où une tendance observée dans plusieurs groupes de données s'inverse lorsque les groupes sont combinés. Cela survient souvent en raison de variables confondues non prises en compte.",
+        impact: "Crucial en analyse de données et en microéconomie pour éviter les erreurs d'interprétation causales.",
+        readTime: "2 min"
+      }
+    ];
+
+    let currentIndex = 0;
+    let filteredFacts = [...facts];
+
+    function renderFact() {
+      const fact = filteredFacts[currentIndex];
+
+      document.getElementById('fact-category').innerText = fact.category;
+      document.getElementById('fact-title').innerText = fact.title;
+      document.getElementById('fact-description').innerText = fact.description;
+      document.getElementById('fact-impact').innerText = fact.impact;
+      document.getElementById('fact-read-time').innerText = fact.readTime + ' de lecture';
+    }
+
+    function nextFact() {
+      currentIndex = (currentIndex + 1) % filteredFacts.length;
+      renderFact();
+    }
+
+    function filterCategory(cat) {
+      if (cat === 'All') {
+        filteredFacts = [...facts];
+      } else {
+        filteredFacts = facts.filter(f => f.category === cat);
+      }
+
+      currentIndex = 0;
+      renderFact();
+    }
+
+    // Initialisation
+    renderFact();
+  </script>
+
+</body>
+</html>
